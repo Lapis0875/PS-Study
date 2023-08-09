@@ -1,0 +1,6 @@
+/.vscode
+/boj_new.sh
+/boj_run.sh
+/python_self.py
+*.sh
+*.out
