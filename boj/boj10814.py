@@ -15,9 +15,7 @@ def mergeSort(array: list[tuple[int, str]], start: int, end: int):
         mergeSort(array, start, mid)
         mergeSort(array, mid + 1, end)
         
-        # print(f">>> Before ({start} ~ {end}):\n{', '.join(map(lambda user: f'<{user[0]} {user[1]}>', array[start:end+1]))}")
         merge(array, start, mid, end)
-        # print(f">>> After ({start} ~ {end}):\n{', '.join(map(lambda user: f'<{user[0]} {user[1]}>', array[start:end+1]))}")
 
 def merge(array: list[tuple[int, str]], start: int, middle: int, end: int):
     temp: list[tuple[int, str]] = []
@@ -25,14 +23,12 @@ def merge(array: list[tuple[int, str]], start: int, middle: int, end: int):
     r: int = middle + 1
     
     if (end - start < 2):   # 단순 교환으로 해결 가능한 첫 번째 정복 단계 처리
-        # print(array[start:end+1])
         if (array[start][0] > array[end][0]):
             temp.append(array[end])
             temp.append(array[start])
         else:
             temp.append(array[start])
             temp.append(array[end])
-        # print(f"=> temp : {temp}")
     else:
         while l <= middle and r <= end:
             if (array[l][0] <= array[r][0]):
@@ -50,13 +46,11 @@ def merge(array: list[tuple[int, str]], start: int, middle: int, end: int):
             r += 1
         
     for i, t in zip(range(start, end + 1), temp):
-        # print(f"merge({start}, {middle}, {end}) : i = {i}, t = {t}")
         array[i] = t
-    # print("\n" * 2)
 
 users: list[tuple[int, str]] = [parseUser(stdin.readline()) for _ in range(N)]
 
 mergeSort(users, 0, N - 1)
 
 for user in users:
-    print(user[0], user[1])
+    print(*user)

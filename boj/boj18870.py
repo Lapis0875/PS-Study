@@ -2,7 +2,8 @@ from sys import stdin
 from typing import Final
 
 N: Final[int] = int(stdin.readline())
-arr: list[int] = [int(stdin.readline()) for _ in range(N)]
+arr: list[int] = list(map(int, stdin.readline().split()))
+sortedArr: list[int] = list(set(arr))
 
 def merge(array: list[int], start: int, middle: int, end: int):
     temp: list[int] = []
@@ -41,7 +42,10 @@ def mergeSort(array: list[int], start: int, end: int):
         mergeSort(array, middle + 1, end)
         merge(array, start, middle, end)
 
-mergeSort(arr, 0, len(arr) - 1)
+mergeSort(sortedArr, 0, len(sortedArr) - 1)
 
-for i in arr:
-    print(i)
+indexMap: dict[int, str] = {}
+for i, e in enumerate(sortedArr):
+    indexMap[e] = str(i)
+
+print(" ".join(map(indexMap.__getitem__, arr)))

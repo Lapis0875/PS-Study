@@ -1,8 +1,7 @@
 from sys import stdin
-from typing import Final
 
-N: Final[int] = int(stdin.readline())
-arr: list[int] = [int(stdin.readline()) for _ in range(N)]
+N, K = map(int, stdin.readline().split())
+arr: list[int] = list(map(int, stdin.readline().split()))
 
 def merge(array: list[int], start: int, middle: int, end: int):
     temp: list[int] = []
@@ -41,7 +40,6 @@ def mergeSort(array: list[int], start: int, end: int):
         mergeSort(array, middle + 1, end)
         merge(array, start, middle, end)
 
-mergeSort(arr, 0, len(arr) - 1)
+mergeSort(arr, 0, N - 1)
 
-for i in arr:
-    print(i)
+print(arr[N - K])

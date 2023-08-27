@@ -1,8 +1,7 @@
 from sys import stdin
-from typing import Final
 
-N: Final[int] = int(stdin.readline())
-arr: list[int] = [int(stdin.readline()) for _ in range(N)]
+numbers: list[int] = [int(stdin.readline()) for _ in range(5)]
+
 
 def merge(array: list[int], start: int, middle: int, end: int):
     temp: list[int] = []
@@ -31,17 +30,18 @@ def merge(array: list[int], start: int, middle: int, end: int):
         while r <= end:
             temp.append(array[r])
             r += 1
-    for i, e in zip(range(start, end + 1), temp):    # start부터 end까지의 인덱스 i와, temp 리스트의 각 요소 e로 반복한다.
+    # start부터 end까지의 인덱스 i와, temp 리스트의 각 요소 e로 반복한다.
+    for i, e in zip(range(start, end + 1), temp):
         array[i] = e
 
+
 def mergeSort(array: list[int], start: int, end: int):
-    if (start < end):
+    if start < end:
         middle: int = (start + end) // 2
         mergeSort(array, start, middle)
         mergeSort(array, middle + 1, end)
         merge(array, start, middle, end)
 
-mergeSort(arr, 0, len(arr) - 1)
 
-for i in arr:
-    print(i)
+mergeSort(numbers, 0, len(numbers) - 1)
+print(sum(numbers) // 5, numbers[2], sep="\n")
