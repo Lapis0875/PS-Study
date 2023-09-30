@@ -7,6 +7,7 @@ N: int = int(stdin.readline())
 res: list[list[bool]] = [[True for _ in range(N)] for _ in range(N)]
 
 def recursive_drill(x: int, y: int, width: int):
+    # print(f"Recursive ( ( {x}, {y} ), {width} )")
     global res
     removal_x: int = x + width
     removal_y: int = y + width
@@ -15,14 +16,18 @@ def recursive_drill(x: int, y: int, width: int):
             res[i][j] = False
     
     next_width: int = width // 3
-    next_x: int = x
+    if next_width == 0:
+        # print("=> end!")
+        return
+    
     next_y: int = y
-    for i in range(3):
-        next_y += width * i
-        for j in range(3):
-            next_x += width * j
+    for _ in range(3):
+        for i in range(3):
+            next_x = x + width * i
+            # print(f"=> ( {next_x} , {next_y} ), {width}")
             if res[next_y][next_x]:
                 recursive_drill(next_x, next_y, next_width)
+        next_y += width
 
 recursive_drill(0, 0, N // 3)
 
