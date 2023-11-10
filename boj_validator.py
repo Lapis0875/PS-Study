@@ -1,11 +1,12 @@
 from abc import ABCMeta
 from enum import StrEnum
-from os import listdir
+from os import listdir, mkdir
 import sys
 import subprocess
 from resource import getrusage, RUSAGE_CHILDREN, struct_rusage
 from typing import Final, Type
 from functools import cached_property
+import click
 
 FILE_SIZE_SUFFIX: tuple[str, str, str, str] = ("B", "KB", "MB", "GB")
 def calculate_memory(mem: float) -> str:
@@ -30,13 +31,15 @@ class ValidationResult:
     stderr: str | None
     time: float
     memory: float
+    message: str | None
     
-    def __init__(self, res_type: ValidationResultType, stdout: str | None = None, stderr: str | None = None, time: float = 0.0, memory: float = 0.0):
+    def __init__(self, res_type: ValidationResultType, stdout: str | None = None, stderr: str | None = None, time: float = 0.0, memory: float = 0.0, message: str | None = None):
         self.res_type = res_type
         self.stdout = stdout
         self.stderr = stderr
         self.time = time
         self.memory = memory
+        self.message = message
     
     def __repr__(self) -> str:
         return f"ValidationResult<type={self.res_type}, stdout={self.stdout}, stderr={self.stderr}, time={self.time}, memory={calculate_memory(self.memory)}>"
@@ -50,7 +53,7 @@ class Language(metaclass=ABCMeta):
     def __init__(self, ext: str = ""):
         self.ext = ext
     
-    def run(self, code_path: str, time_limit: int, memory_limit: int, input: str, output: str) -> ValidationResult:
+    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str) -> ValidationResult:
         ...
     
     def __str__(self):
@@ -63,7 +66,7 @@ class Python(Language):
     def __init__(self):
         super().__init__("py")
     
-    def run(self, code_path: str, time_limit: int, memory_limit: int, input: str, output: str) -> ValidationResult:
+    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str) -> ValidationResult:
         try:
             res: subprocess.CompletedProcess = subprocess.run(
                 ["python", code_path],
@@ -85,9 +88,9 @@ class Python(Language):
             if stdout.count("\n") > output.count("\n"):
                 return ValidationResult(ValidationResultType.OUTPUT_OVERFLOW, stdout=stdout)
             
-            for std_line, expected_line in zip(stdout, output):
+            for i,(std_line, expected_line) in enumerate(zip(stdout, output)):
                 if std_line.rstrip() != expected_line.rstrip():
-                    return ValidationResult(ValidationResultType.INCORRECT, stdout=stdout)
+                    return ValidationResult(ValidationResultType.INCORRECT, stdout=stdout, message=f"{i} 번째 줄의 출력이 다릅니다!:\nStdout:\n{std_line}\n\nAnswer:\n{expected_line}")
             
             return ValidationResult(ValidationResultType.CORRECT, time=res_info.ru_utime + res_info.ru_stime, memory=res_info.ru_maxrss)
         except subprocess.TimeoutExpired:
@@ -116,12 +119,12 @@ LangMap: dict[str, Type[Language]] = {
 class BOJValidator:
     boj_id: Final[int]
     lang: Final[Language]
-    time_limit: int = 1         # time limit in seconds
+    time_limit: float = 1.0         # time limit in seconds
     memory_limit: int = 128     # memory limit in megabytes
     inputs: list[str]
     outputs: list[str]
     
-    def __init__(self, boj_id: int, lang: Language, time = 1, memory = 128):
+    def __init__(self, boj_id: int, lang: Language, time = 1.0, memory = 128):
         self.boj_id = boj_id
         self.lang = lang
         self.time_limit = time
@@ -166,6 +169,7 @@ class BOJValidator:
                 print(f"```\n{expected_output}\n```", end="\n\n")
                 print("Your Output:\n")
                 print(f"```\n{validation_res.stdout}\n```", end="\n\n")
+                print(f"\n\nMessage: {validation_res.message}")
             case ValidationResultType.OUTPUT_OVERFLOW:
                 print("** 출력 초과 **\n")
                 print("Input:\n")
@@ -222,20 +226,33 @@ class BOJValidator:
 
 # main.py
 
-def main():
-    """CLI로 실행된 경우 수행할 코드."""
-    boj_number: int = int(sys.argv[1])
-    lang_ext: str = sys.argv[2]
-    extra_args: dict[str, int] = {}
-    if len(sys.argv) > 3:
-        for arg in sys.argv[3:]:
-            key, value = arg.split("=")
-            extra_args[key] = int(value)
+@click.group()
+def cli(): pass
 
+@cli.command()
+@click.argument("boj_number", type=click.INT)
+@click.argument("lang_ext", type=click.STRING)
+def create(boj_number: int, lang_ext: str):
+    mkdir(f"boj/{boj_number}")
+    mkdir(f"boj/{boj_number}/cases")
+    with (
+        open(file=f"./boj/{boj_number}/solution.{lang_ext}", mode="w") as sol_file,
+        open(file=f"./boj/templates/solution.{lang_ext}", mode="r") as template
+    ):
+        sol_file.write(template.read())
+    print(f">>> Created new BOJ solution directory for boj{boj_number} with language {lang_ext}!")
+
+@cli.command()
+@click.argument("boj_number", type=click.INT)
+@click.argument("lang_ext", type=click.STRING)
+@click.argument("time", type=click.FLOAT, default=1.0)
+@click.argument("memory", type=click.INT, default=128)
+def run(boj_number: int, lang_ext: str, time: float = 1.0, memory: int = 128):
+    """CLI로 실행된 경우 수행할 코드."""
     lang: Language = LangMap[lang_ext]()
-    validator = BOJValidator(boj_number, lang, **extra_args)
+    validator = BOJValidator(boj_number, lang, time, memory)
     validator.run()
 
 # 이 파이썬 코드가 python ~~.py 명령어로 실행된 파일일 때 (다른 파일에서 모듈로 불러와진 경우를 제외해준다)
 if __name__ == "__main__":
-    main()
+    cli()
