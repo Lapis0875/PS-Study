@@ -1,9 +1,9 @@
 from typing import Final
 from print_tree import print_tree, tree             # print_tree.py에서 필요한 함수들을 가져온다.
 
-key: list[str] = ["Don", "Isabelle", "Ralph", "Wally"]
+key: list[str] = ["A", "B", "C", "D"]
 N: Final[int] = 4
-p: Final[list[float]] = [0, 3/8, 3/8, 1/8, 1/8]     # 인덱스를 1부터 사용하기 위해, 0번 원소를 추가한다.
+p: Final[list[float]] = [0, 0.25, 0.3, 0.15, 0.3]     # 인덱스를 1부터 사용하기 위해, 0번 원소를 추가한다.
     
 # R[1..n+1][0..n] 이므로, n+2 * n+1 크기의 2차원 배열을 생성한다.
 # 실제 행 크기는 n+1 이지만, 인덱스를 1부터 사용하기 위해 0번 행은 사용하지 않지만 코드상 편의를 위해 추가한다.
@@ -80,6 +80,6 @@ def print_probability(n: int, array: list[list[float]]):
         print()
 
 print(optsearchtree(N, p, R))
-root = tree(1, N, R)
+root = tree(1, N, R, key)
 if root is not None:
     print_tree(root, key)

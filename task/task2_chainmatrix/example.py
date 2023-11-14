@@ -32,7 +32,7 @@ def minmult(N: int, d: list[int], P: list[list[int]]) -> int:
 def order(i: int, j: int):
     """
     교재의 order 의사코드를 구현한 함수.
-    최소의 곱셈 순서를 출력한다.
+    곱셈 횟수를 최소로 하는 곱셈 순서를 출력한다.
 
     Args:
         i (int): 곱셈할 시작 행렬의 인덱스
@@ -52,12 +52,13 @@ def print_array(n: int, array: list[list[int]]):
 
     Args:
         n (int): 행렬의 크기
-        array (list[list[Any]]): 출력할 행렬
+        array (list[list[int]]): 출력할 행렬
     """
     # 인덱스를 1부터 사용하기 위해, 크기를 N + 1로 설정한 점을 반영한다.
     for i in range(1, n + 1):
         for j in range(1, n + 1):
-            print(format(array[i][j], "3d"), end=' ')    # INF와 글자 수를 맞추기 위해, 모든 숫자가 최소 3자리의 문자열로 출력되게 한다.
+            # 행렬의 원소가 일정한 간격을 두고 출력되게 하기 위해, 3자리의 문자열로 출력한다.
+            print(format(array[i][j], "3d"), end=' ')
         print()
         
 print(minmult(N, d, P))
