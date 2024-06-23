@@ -4,7 +4,7 @@ One File Implementation of BOJ Checking Utiltiy.
 @Author Lapis0875
 """
 from abc import ABCMeta
-from enum import StrEnum
+from enum import Enum
 from os import listdir, mkdir
 import subprocess
 from resource import getrusage, RUSAGE_CHILDREN, struct_rusage
@@ -22,7 +22,7 @@ def calculate_memory(mem: float) -> str:
     
     return f"{mem:.4f}{FILE_SIZE_SUFFIX[suffix]}"
 
-class ValidationResultType(StrEnum):
+class ValidationResultType(Enum):
     CORRECT = SUCCESS = "맞았습니다"
     INCORRECT = FAIL = "틀렸습니다"
     TIMEOUT = "시간 초과"
