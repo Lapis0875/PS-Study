@@ -1,0 +1,1 @@
+{"name":"Local: solution","url":"/home/guac/study/PS/PS-Study/boj/32776/solution.py","tests":[{"id":1745413440633,"input":"303\n1 1 1","output":"flight"},{"id":1745413452295,"input":"303\n101 101 103","output":"high speed rail"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/guac/study/PS/PS-Study/boj/32776/solution.py","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: solution","url":"/home/guac/study/PS/PS-Study/boj/22966/solution.py","tests":[{"id":1736087918055,"input":"3\nABCDE 4\nBCDEF 2\nCDEFG 3","output":"BCDEF"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/guac/study/PS/PS-Study/boj/22966/solution.py","group":"local","local":true}
