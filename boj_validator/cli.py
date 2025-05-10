@@ -3,6 +3,7 @@ from pathlib import Path
 from os import mkdir
 from lang import Language, LangMap
 from validator import BOJValidator
+from migration import migrate as migrate_task
 
 __all__ = ("cli",)
 
@@ -75,3 +76,11 @@ def debug_case(boj_number: int, lang_ext: str, case_number: int, time: float, me
     validator = BOJValidator(lang, time, memory, extra_time)
     validator.parse_question_data(boj_number)
     validator.debug_case(case_number)
+
+
+@cli.command()
+def migrate():
+    """Command to automatically migrate old boj solution files (bojXXXXX.{lang_ext}) to the new format (boj/XXXXXX/solution.{lang_ext})."""
+    print("Migrating old boj solutions ...")
+    migrate_task("./boj")
+    print(">>> Done!")
