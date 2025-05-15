@@ -1,1 +1,1 @@
-from sys import stdin
+input = open(0).readline
