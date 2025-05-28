@@ -1,0 +1,1 @@
+{"name":"Local: solution","url":"/home/guac/Study/PS-Study/boj/15351/solution.py","tests":[{"id":1748458236882,"input":"4\nOTAKU LIFE\nPRODUCER\nGAMING LIFE\nPROGRAMMING","output":"PERFECT LIFE\nPERFECT LIFE\n83\n131"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/guac/Study/PS-Study/boj/15351/solution.py","group":"local","local":true}
