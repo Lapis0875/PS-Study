@@ -1,9 +1,12 @@
-from click import group, argument, INT, STRING, FLOAT, BOOL
+from click import group, argument, help_option, INT, STRING, FLOAT, BOOL
 from pathlib import Path
 from os import mkdir
+
 from lang import Language, LangMap
+from lang.errors import UnsupportedLanguageError
 from validator import BOJValidator
 from migration import migrate as migrate_task
+from generator import CaseGenerator, checks
 
 __all__ = ("cli",)
 
@@ -77,10 +80,38 @@ def debug_case(boj_number: int, lang_ext: str, case_number: int, time: float, me
     validator.parse_question_data(boj_number)
     validator.debug_case(case_number)
 
-
 @cli.command()
 def migrate():
     """Command to automatically migrate old boj solution files (bojXXXXX.{lang_ext}) to the new format (boj/XXXXXX/solution.{lang_ext})."""
     print("Migrating old boj solutions ...")
     migrate_task("./boj")
     print(">>> Done!")
+
+@cli.group()
+def generator():
+    """Command group to run/manage 'generator' scripts for boj problems."""
+    pass
+
+@generator.command()
+@argument("boj_number", type=INT, metavar="BOJ problem number.")
+@argument("lang_ext", type=STRING, metavar="Language of generator script. Defines which language runner to use.")
+def run(boj_number: int, lang_ext: str):
+    """Run generator script of language {lang_ext} for boj problem {boj_number}.
+    @raises UnsupportedLanguageError: If argument {lang_ext} is not supported.
+    """
+    try:
+        gen = CaseGenerator(lang_ext, boj_number)
+        gen.run()
+    except UnsupportedLanguageError as e:
+        print(e)
+
+@generator.command()
+@argument("boj_number", type=INT, metavar="BOJ problem number.")
+@argument("lang_ext", type=STRING, default="", metavar="Specific language for generator script. If not supplied, then checks all of existing scripts.")
+def check(boj_number: int, lang_ext: str = ""):
+    """Check all/certain generator script in boj/{boj_number}."""
+    try:
+        gen_scripts = checks.check_generator(boj_number, lang_ext)
+        print("\n".join(map(lambda sc: f"- ./{sc}", gen_scripts)))
+    except UnsupportedLanguageError as e:
+        print(e)

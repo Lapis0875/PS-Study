@@ -38,43 +38,53 @@ class Language:
             stderr=subprocess.PIPE,
             timeout=timeout,
         )
+
+    def run_script(self, code_path: str, input: str, time_limit: float = 0.0) -> subprocess.CompletedProcess:
+        """Run script with language.
+        @param code_path: script file path.
+        @param input: input data.
+        @param time_limit: time limit for script.
+        """
+        raise NotImplementedError()     # Should be implemented per language.
     
-    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_time: bool = True) -> SolutionResult:
-        """이 언어의 실행 환경으로 BOJ의 풀이를 실행하고, 그 결과를 반환합니다.
+    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_benefit: bool = True) -> SolutionResult:
+        """Run solution code with this language setting, then return the result as `SolutionResult`.
 
         Args:
-            code_path (str): 실행할 코드 파일의 상대 경로입니다.
-            time_limit (float): 이 문제의 시간 제한입니다. 시간 초과를 일으키는 경우를 파악하기 위해 사용합니다.
-                                일부 언어에 대해서는 문제의 시간 제한보다 실제 채점 제한이 더 여유로울 수 있습니다.
-            memory_limit (int): 이 문제의 메모리 제한입니다. 메모리 초과를 일으키는 경우를 파악하기 위해 사용합니다.
-                                일부 언어에 대해서는 문제의 시간 제한보다 실제 채점 제한이 더 여유로울 수 있습니다.
-            input (str): 테스트 케이스의 입력입니다.
-            output (str): 대조할 정답 출력입니다.
+            code_path (str): Path str for solution script.
+            time_limit (float): Time limit for this problem. If exceeded, then result would be timeout.
+                                If this language needs extra time, you can internally implement to calculate extra time.
+            memory_limit (int): Memory usage limit for this problem. If exceeded, then result would be memory overflow.
+                                If this language needs extra memory, you can internally implment to calculate extra memory limit.
+            input (str): Input data to the solution. It is intended to receive single test case input.
+            output (str): Output data to compare with solution's result. It is intended to receive single test case output.
+            extra_benefit (bool): Flag value to use extra time & memory limit. Defaults to `True`.
 
         Returns:
-            SolutionResult: 실행 결과에 대한 분석입니다.
+            SolutionResult: Result data of this solution with given test case.
         """
-        raise NotImplementedError()     # 언어별로 구현되어야 합니다.
+        raise NotImplementedError()     # Should be implemented per language.
     
-    def debug(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_time: bool = True) -> DebugResult:
-        """이 언어의 실행 환경으로 BOJ의 풀이 코드를 디버깅하고, 그 결과를 반환합니다.
+    def debug(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_benefit: bool = True) -> DebugResult:
+        """Debug solution code with this language setting, then return the result as `SolutionResult`.
 
         Args:
-            code_path (str): 실행할 코드 파일의 상대 경로입니다.
-            time_limit (float): 이 문제의 시간 제한입니다. 시간 초과를 일으키는 경우를 파악하기 위해 사용합니다.
-                                일부 언어에 대해서는 문제의 시간 제한보다 실제 채점 제한이 더 여유로울 수 있습니다.
-            memory_limit (int): 이 문제의 메모리 제한입니다. 메모리 초과를 일으키는 경우를 파악하기 위해 사용합니다.
-                                일부 언어에 대해서는 문제의 시간 제한보다 실제 채점 제한이 더 여유로울 수 있습니다.
-            input (str): 테스트 케이스의 입력입니다.
-            output (str): 대조할 정답 출력입니다.
+            code_path (str): Path str for solution script.
+            time_limit (float): Time limit for this problem. If exceeded, then result would be timeout.
+                                If this language needs extra time, you can internally implement to calculate extra time.
+            memory_limit (int): Memory usage limit for this problem. If exceeded, then result would be memory overflow.
+                                If this language needs extra memory, you can internally implment to calculate extra memory limit.
+            input (str): Input data to the solution. It is intended to receive single test case input.
+            output (str): Output data to compare with solution's result. It is intended to receive single test case output.
+            extra_benefit (bool): Flag value to use extra time & memory limit. Defaults to `True`.
 
         Returns:
-            DebugRes: 디버그 결과에 대한 분석입니다.
+            SolutionResult: Result data of this solution with given test case.
         """
-        raise NotImplementedError()     # 아직 대부분의 언어에서 구현되지 않은 상태입니다.
+        raise NotImplementedError()
     
     def __str__(self) -> str:
-        """디버깅을 위해 사용하는 문자열 변환 오버로딩입니다.
+        """
 
         Returns:
             str: 이 언어 객체의 정보를 담은 문자열입니다.

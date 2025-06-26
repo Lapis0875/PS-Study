@@ -15,15 +15,37 @@ class Python(Language, extension="py"):
     
     def __init__(self):
         super().__init__("py")
-    
-    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_time: bool = True) -> SolutionResult:
-        try:
-            before: float = time.time()
-            res: subprocess.CompletedProcess = self.run_subprocess(
+
+    def run_script(self, code_path: str, input: str, time_limit: float = 0.0) -> subprocess.CompletedProcess:
+        """Run python script.
+        @param code_path: python script file path.
+        @param input: input data.
+        @param time_limit: time limit for script.
+        """
+        if time_limit > 0:
+            self.run_subprocess(
                 ["python", code_path],
                 input=input,
-                timeout=time_limit*self.python_tle_ratio if extra_time else time_limit
+                timeout=time_limit
             )
+        else:
+            self.run_subprocess(
+                ["python", code_path],
+                input=input
+            )
+
+    
+    def run(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_time: bool = True) -> SolutionResult:
+        """Run python solution file.
+        @param code_path: python script file path.
+        @param time_limit: time limit for script.
+        @param memory_limit: memory limit for script. If value is 0, then runner does not check memory usage.
+        @param input: input data.
+        @param output: output data.
+        """
+        try:
+            before: float = time.time()
+            res: subprocess.CompletedProcess = self.run_script(code_path, input, time_limit*self.python_tle_ratio if extra_time else time_limit)
             duration = time.time() - before
             res_info: struct_rusage = getrusage(RUSAGE_CHILDREN)
             # print(f"time: {res_info.ru_utime} (user) {res_info.ru_stime} (system) {res_info.ru_utime + res_info.ru_stime} (total)")
@@ -31,7 +53,7 @@ class Python(Language, extension="py"):
             stdout = res.stdout.rstrip()
             if res.stderr is not None and res.stderr != "":
                 return SolutionResult(SolutionResultType.RUNTIME_ERROR, stdout=stdout, stderr=res.stderr)
-            if res_info.ru_maxrss // (1024 ** 2) > (memory_limit*self.python_mem_ratio):
+            if memory_limit > 0 and res_info.ru_maxrss // (1024 ** 2) > (memory_limit*self.python_mem_ratio):
                 return SolutionResult(SolutionResultType.MEMORY_OVERFLOW, memory=res_info.ru_maxrss)
             if stdout.count("\n") > output.count("\n"):
                 return SolutionResult(SolutionResultType.OUTPUT_OVERFLOW, stdout=stdout)
@@ -46,11 +68,7 @@ class Python(Language, extension="py"):
     
     def debug(self, code_path: str, time_limit: float, memory_limit: int, input: str, output: str, extra_time: bool = True) -> DebugResult:
         before: float = time.time()
-        res: subprocess.CompletedProcess = self.run_subprocess(
-            ["python", code_path],
-            input=input,
-            timeout=time_limit*self.python_tle_ratio if extra_time else time_limit
-        )
+        res: subprocess.CompletedProcess = self.run_script(code_path, input, time_limit*self.python_tle_ratio if extra_time else time_limit)
         duration = time.time() - before
         res_info: struct_rusage = getrusage(RUSAGE_CHILDREN)
         return DebugResult(stdout=res.stdout.rstrip(), stderr=res.stderr.rstrip(), time=duration, memory=res_info.ru_maxrss, message="디버그 결과를 확인하세요.")
