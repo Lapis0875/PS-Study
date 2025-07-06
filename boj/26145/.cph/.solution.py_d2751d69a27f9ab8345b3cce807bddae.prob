@@ -1,0 +1,1 @@
+{"name":"Local: solution","url":"/home/guac/Study/PS-Study/boj/26145/solution.py","tests":[{"id":1751724198781,"input":"3 2\n200 400 100\n0 40 30 10 20\n60 0 50 20 40\n0 10 0 30 40","output":"160 280 100 60 100"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/guac/Study/PS-Study/boj/26145/solution.py","group":"local","local":true}
