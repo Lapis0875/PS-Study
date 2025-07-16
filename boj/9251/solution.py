@@ -14,3 +14,21 @@ for b_idx in range(1, b_length + 1):
             LCS[b_idx][a_idx] = max(LCS[b_idx - 1][a_idx], LCS[b_idx][a_idx - 1])
 
 print(LCS[b_length][a_length])
+
+# 문제 답이랑 상관 없는, LCS의 가능한 값 찾기
+lcs_length = LCS[b_length][a_length]
+result = ["" for _ in range(lcs_length)]
+cur_r = b_length
+cur_c = a_length
+for i in range(lcs_length):
+    while True:
+        if LCS[cur_r - 1][cur_c] == LCS[cur_r][cur_c]:
+            cur_r -= 1
+        elif LCS[cur_r][cur_c - 1] == LCS[cur_r][cur_c]:
+            cur_c -= 1
+        else:
+            cur_r -= 1
+            cur_c -= 1
+            break
+    result[i] = B[cur_r]
+print(result[::-1])
