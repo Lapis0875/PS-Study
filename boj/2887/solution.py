@@ -14,11 +14,6 @@ for axis in range(1, 4):
         weight = abs(axis_sorted[i][axis] - axis_sorted[i + 1][axis])
         edges.append((axis_sorted[i][0], axis_sorted[i + 1][0], weight))
 
-print("Edges:")
-edges.sort(key=lambda e: e[0])
-for e in edges:
-    x, y, c = e
-    print(f"- {x} {y} ({c})")
 edges.sort(key=lambda e: e[2])
 
 # Union Find 알고리즘
@@ -50,9 +45,8 @@ for x, y, c in edges:
     mst_len += 1
     total_cost += c
     union(x, y)
-    print(f"=> {x}, {y} ({c}), total = {total_cost}")
 
-    # if mst_len == N - 1:   # MST는 항상 N개의 정점을 가지는 그래프에 대해 N-1개의 간선을 가지는 트리이다.
-    #     break
+    if mst_len == N - 1:   # MST는 항상 N개의 정점을 가지는 그래프에 대해 N-1개의 간선을 가지는 트리이다.
+        break
 
 print(total_cost)

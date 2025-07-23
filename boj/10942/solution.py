@@ -1,4 +1,3 @@
-from collections import deque
 input = open(0).readline
 N = int(input())
 arr = list(map(int, input().split()))
