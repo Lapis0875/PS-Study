@@ -16,12 +16,8 @@ columns = [[True for _ in range(rotated_length)] for _ in range(2)] # 배치 가
 # 최적화 팁: 비숍의 특징을 고려해보면, 흑칸 비숍과 백칸 비숍은 원래 서로 간섭하지 못한다. 따라서, 흑칸과 백칸을 나누어 푼 후 답을 더해도 된다!
 max_bishops = [0, 0]
 def backtracking(row, count, is_black):
-    # print(f"backtracking({row}, {count})")
-    # print("\n".join(map(lambda b: f"- {b}", bishops)))
-    # print()
 
     if row >= rotated_length:
-        # print("[ End of backtracking ]")
         max_bishops[is_black] = max(max_bishops[is_black], count)
         return
 
@@ -33,7 +29,6 @@ def backtracking(row, count, is_black):
             columns[is_black][j] = True
             bishops[is_black][count] = None
     backtracking(row + 2, count, is_black)
-    # Q. 만약 for문 안에서 가능한 분기를 찾지 못하면, backtracking이 다음 행으로 넘어가지 못하고 종료된다.
 
 # 홀수 행과 짝수 행을 나눠서 DFS
 backtracking(0, 0, 0)
