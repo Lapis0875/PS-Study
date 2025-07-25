@@ -1,12 +1,13 @@
 from click import group, argument, help_option, INT, STRING, FLOAT, BOOL
 from pathlib import Path
-from os import mkdir
+from os import mkdir, makedirs
 
 from lang import Language, LangMap
 from lang.errors import UnsupportedLanguageError
 from validator import BOJValidator
 from migration import migrate as migrate_task
 from generator import CaseGenerator, checks
+from path_util import SolutionPath
 
 __all__ = ("cli",)
 
@@ -17,10 +18,11 @@ def cli(): pass
 @argument("boj_number", type=INT)
 @argument("lang_ext", type=STRING)
 def create(boj_number: int, lang_ext: str):
-    mkdir(f"boj/{boj_number}")
-    mkdir(f"boj/{boj_number}/cases")
+    path = SolutionPath()
+    path.question(boj_number).lang(lang_ext)
+    makedirs(path.cases, exist_ok=True)
     with (
-        open(file=f"./boj/{boj_number}/solution.{lang_ext}", mode="w") as sol_file,
+        open(file=path.solution, mode="w") as sol_file,
         open(file=f"./boj/templates/solution.{lang_ext}", mode="r") as template
     ):
         sol_file.write(template.read())
@@ -44,9 +46,11 @@ def run(boj_number: int, lang_ext: str, time: float = 1.0, memory: int = 128, ex
 @argument("amount", type=INT)
 def cases(boj_number: int, amount: int):
     """Command to automatically create input and output files for the test cases. (Content should be manually filled.)"""
+    path = SolutionPath()
+    path.question(boj_number)
     for i in range(amount):
-        Path(f"./boj/{boj_number}/cases/{i}.in").touch()
-        Path(f"./boj/{boj_number}/cases/{i}.out").touch()
+        Path(f"{path.cases}/{i}.in").touch()
+        Path(f"{path.cases}/{i}.out").touch()
     print(">>> Done!")
 
 @cli.command()
