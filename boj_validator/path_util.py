@@ -8,7 +8,7 @@ class SolutionPath:
     root: Final[str]
     __lang_ext: str
     __question_id: int
-    def __init__(self, root: str):
+    def __init__(self, root: str = "./boj/"):
         self.root = root
         self.__lang_ext = ""
         self.__question_id = -1
