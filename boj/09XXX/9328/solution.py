@@ -9,11 +9,10 @@ building = [["." for _ in range(100)] for _ in range(100)]
 
 # 각 케이스 별 상태를 기록하는 변수
 keys_have = {}
-keys_available = {}
 entrances = []
 restart = False
 
-# 상수
+# 각 케이스 별 격자 그래프의 크기를 전역 변수에 저장하고 사용한다.
 H = 0
 W = 0
 
@@ -81,9 +80,7 @@ for _ in range(int(input())):
                         cnt += 1
                         building[r][c] = "."
                     entrances.append((r, c))
-                    
-            if tile.islower(): # 잠재적으로 얻을 수 있는 열쇠 기록해 두기
-                keys_available[tile.upper()] = True
+
     # BFS
     idx = 0
     while idx < len(entrances):
@@ -103,5 +100,4 @@ for _ in range(int(input())):
     # 상태변수 초기화
     queue.clear()
     keys_have.clear()
-    keys_available.clear()
     entrances.clear()
