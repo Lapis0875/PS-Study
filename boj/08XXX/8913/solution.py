@@ -8,7 +8,7 @@ def dfs(string_groups):
     Backtracking (DFS with condition) using string's group information.
     
     Arguments:
-        s_info (list[tuple[int, int]]): list of group info(tuple of two integers: start & end index)
+        string_groups (list[tuple[int, int]]): list of group info(tuple of two integers: start & end index)
     """
     if len(string_groups) == 1: # end of dfs
         res = string_groups[0][1] - string_groups[0][0] >= 2 # return whether we can remove last part.
