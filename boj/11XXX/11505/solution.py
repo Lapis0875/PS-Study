@@ -10,7 +10,7 @@ arr = list(int(input()) for _ in range(N))
 tree = [0] * tree_size
 
 def build_segment_tree(node, start, end):
-    """세그먼트 트리 배열을 초기화합니다."""
+    """세그먼트 트리를 초기화한다."""
     if start == end:
         tree[node] = arr[start]
     else:
@@ -27,41 +27,38 @@ def query(node, start, end, left, right):
     start, end: 현재 노드에 저장된 구간
     left, right: 찾고자 하는 구간
     """
-    # print(f"query({left}, {right}) in tree[{node}] ({start}, {end})")
-    if start > right or end < left: # 현재 노드는 찾고자 하는 구간에 완전히 포함되지 않음
-        # print(f"=> 1 (포함되지 않음)")
+    if start > right or end < left: # 찾고자 하는 구간에 현재 구간이 완전히 포함되지 않는 경우
         return 1
-    elif start >= left and end <= right:
-        # print(f"=> tree[node] = {tree[node]} (완전히 포함됨)")
+    elif start >= left and end <= right: # 찾고자 하는 구간에 현재 구간이 완전히 포함될 경우
         return tree[node]
-    else:
-        # print(f"=> 부분적으로 포함됨")
+    else: # 찾고자 하는 구간에 현재 구간의 일부만 포함될 경우
         mid = (start + end) // 2
         lmul = query(node * 2, start, mid, left, right)
         rmul = query(node * 2 + 1, mid + 1, end, left, right)
-        res = (lmul * rmul) % MOD
-        # print(f"=> tree[{node}] ({start}, {end}) 에서 ({left, right})에 포함되는 구간 곱 -> {res}")
         return (lmul * rmul) % MOD
 
-def update_tree(node, start, end, index, val):
-    if start > index or end < index:
+def update(node, start, end, index, val):
+    """기존 배열에서 index 위치에 저장된 값을 val로 수정한다.
+    이후 세그먼트 트리에 저장된 구간 곱을 갱신한다.
+    node: 현재 노드의 번호 (tree에 저장된 위치)
+    start, end: 현재 노드에 저장된 구간
+    index, val: 기존 배열에서 값이 변한 위치와 그 값
+    """
+    if start > index or end < index: # 현재 구간에 index를 포함되지 않는 경우.
         return
-    elif start == end:
+    elif start == end: # 현재 노드가 leaf일 경우.
         tree[node] = val
         arr[index] = val
-    else:
+    else: # 현재 구간에 index가 포함되는 경우
         mid = (start + end) // 2
-        update_tree(node * 2, start, mid, index, val)
-        update_tree(node * 2 + 1, mid + 1, end, index, val)
+        update(node * 2, start, mid, index, val)
+        update(node * 2 + 1, mid + 1, end, index, val)
         tree[node] = (tree[node * 2] * tree[node * 2 + 1]) % MOD
     
-def update(index, val):
-    arr[index] = val
-    update_tree(1, 0, N - 1, index, val)
 
 for _ in range(M + K):
     a, b, c = map(int, input().split())
     if a == 1:
-        update(b - 1, c)
+        update(1, 0, N - 1, b - 1, c)      # 실제 인덱스는 0...N-1이므로 1씩 빼서 사용.
     else:
-        print(query(1, 0, N - 1, b - 1, c - 1))
+        print(query(1, 0, N - 1, b - 1, c - 1)) # 실제 인덱스는 0...N-1이므로 1씩 빼서 사용.
