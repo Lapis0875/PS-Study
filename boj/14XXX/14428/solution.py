@@ -82,9 +82,3 @@ for _ in range(int(input())):
         update(*args)
     else:
         print(query(*args) + 1)
-    
-    print("arr:")
-    print(arr)
-    print("tree:")
-    print(tree)
-    print()
