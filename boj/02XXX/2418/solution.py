@@ -7,13 +7,10 @@ word = input().rstrip()
 cnt = 0
 memo = [[[-1 for _ in range(L)] for _ in range(W)] for _ in range(H)]
 def dfs(r, c, depth):
-    print(f"DFS({r},{c}) depth={depth} // TILE = {letters[r][c]}")
     if depth == L:
-        print(f"=> DEPTH = L")
         return 1
     
     if memo[r][c][depth] != -1:
-        print(f"=> memo: {memo[r][c][depth]}")
         return memo[r][c][depth]
     
     res = 0
@@ -23,7 +20,6 @@ def dfs(r, c, depth):
         if 0 <= nr < H and 0 <= nc < W and letters[nr][nc] == word[depth]:
             res += dfs(nr, nc, depth + 1)
     memo[r][c][depth] = res
-    print(f"=> ({r},{c}) at {word[depth]} = {res}")
     return res
 
 for r in range(H):
