@@ -1,4 +1,3 @@
-# https://www.acmicpc.net/problem/2665
 from heapq import heappop, heappush
 input = open(0).readline
 N = int(input())
