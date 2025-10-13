@@ -1,8 +1,6 @@
 input = open(0).readline
-
 enemy_base = [None] * 3000
 roots = [i for i in range(3000)]
-visited = [False] * 3000
 base_cnt = 0
 
 # Union - Find
@@ -42,7 +40,6 @@ for _ in range(int(input())):
     N = int(input())
 
     for i in range(N):
-        visited[i] = False
         roots[i] = i
         enemy_base[i] = tuple(map(int, input().split())) # (x, y, R)
     
