@@ -1,8 +1,7 @@
-from decimal import Decimal
+from math import sqrt
 input = open(0).readline
 
 N, Q = map(int, input().split())
-DECIMAL_SQRT = Decimal("0.5")
 
 def calculate_health(prev_y, cur_y, distance):
     height_diff = cur_y - prev_y
@@ -13,18 +12,18 @@ def calculate_health(prev_y, cur_y, distance):
     else: # height_diff < 0
         return distance
 
-X = list(map(Decimal, input().split()))
-Y = list(map(Decimal, input().split()))
+X = list(map(int, input().split()))
+Y = list(map(int, input().split()))
 
 prefix_health = [0] * N # x좌표가 증가하는 방향으로 이동시의 누적 합
 reversed_prefix_health = [0] * N # x좌표가 감소하는 방향으로 이동 시의 누적 합
 
 for idx in range(1, N):
-    distance = ((X[idx] - X[idx - 1]) ** 2 + (Y[idx] - Y[idx - 1]) ** 2) ** DECIMAL_SQRT
+    distance = sqrt((X[idx] - X[idx - 1]) ** 2 + (Y[idx] - Y[idx - 1]) ** 2)
     prefix_health[idx] = prefix_health[idx - 1] + calculate_health(Y[idx - 1], Y[idx], distance)
 
     rev_idx = N - 1 - idx
-    distance = ((X[rev_idx + 1] - X[rev_idx]) ** 2 + (Y[rev_idx + 1] - Y[rev_idx]) ** 2) ** DECIMAL_SQRT
+    distance = sqrt((X[rev_idx + 1] - X[rev_idx]) ** 2 + (Y[rev_idx + 1] - Y[rev_idx]) ** 2)
     reversed_prefix_health[rev_idx] = reversed_prefix_health[rev_idx + 1] + calculate_health(Y[rev_idx + 1], Y[rev_idx], distance)
 
 for _ in range(Q):
