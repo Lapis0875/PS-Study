@@ -1,9 +1,14 @@
-# Migrated from ./boj/boj2745.py by boj_validator
-from sys import stdin
+input = open(0).readline
+N, B = input().split()
+B = int(B)
+A_ord = 65
+ord_map = {chr(A_ord + k): 10 + k for k in range(26)}
+ord_map.update({str(i): i for i in range(10)})
 
-target, base = stdin.readline().split()
-base = int(base)
+ans = 0
+base = 1
+for i in range(len(N) - 1, -1, -1):
+    ans += ord_map[N[i]] * base
+    base *= B
 
-decimal: int = 0
-for digit in target[::-1]:
-    decimal += int(digit) if digit.isdigit() else ord(digit) - 55
+print(ans)
