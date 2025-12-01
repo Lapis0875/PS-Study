@@ -14,7 +14,6 @@ for _ in range(M):
 start, end = map(int, input().split())
 queue = deque([start])
 time = [-1] * 10001
-path = [[] for _ in range(10001)]
 time[start] = 0
 
 # 1. 최장 경로 구하기
