@@ -1,20 +1,20 @@
 from heapq import heappush, heappop, heapreplace
-from collections import deque
+
 input = open(0).readline
 N, M = map(int, input().split())
 
 baits = sorted(map(int, input().split())) # 미끼의 가치를 최소 힙으로 관리한다.
 fishes = sorted(map(int, input().split())) # 물고기들의 가치를 최소 힙으로 관리한다.
 
-valid_baits = []
-caught_fishes = []
+valid_baits = [] # 사용할 수 있는 미끼를 저장하는 최대 힙.
+caught_fishes = [] # 잡은 물고기를 저장하는 최소 힙.
 
-actions = []
+actions = [] # 각 단계에서 진행한 동작의 정보를 저장할 리스트.
 
 bait_idx = 0
 for fish in fishes:
     while bait_idx < N and baits[bait_idx] < fish:
-        heappush(valid_baits, -baits[bait_idx]) # 항상 물고기의 가치보다 작은 미끼 중 가장 큰 것을 사용해 이후 남은 물고기를 
+        heappush(valid_baits, -baits[bait_idx])
         bait_idx += 1
     
     if valid_baits:
