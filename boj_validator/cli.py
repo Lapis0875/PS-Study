@@ -119,3 +119,21 @@ def check(boj_number: int, lang_ext: str = ""):
         print("\n".join(map(lambda sc: f"- ./{sc}", gen_scripts)))
     except UnsupportedLanguageError as e:
         print(e)
+
+@cli.group()
+def judge():
+    """Command group to run/manage 'judge' scripts for boj problems."""
+    pass
+
+@judge.command()
+@argument("boj_number", type=INT, metavar="BOJ problem number.")
+@argument("lang_ext", type=STRING, metavar="Language of judge script. Defines which language runner to use.")
+def run(boj_number: int, lang_ext: str):
+    """Run judge script of language {lang_ext} for boj problem {boj_number}.
+    @raises UnsupportedLanguageError: If argument {lang_ext} is not supported.
+    """
+    try:
+        gen = CaseGenerator(lang_ext, boj_number)
+        gen.run()
+    except UnsupportedLanguageError as e:
+        print(e)
